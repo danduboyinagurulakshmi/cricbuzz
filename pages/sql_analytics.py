@@ -32,14 +32,14 @@ def render_sql_analytics():
 		st.subheader("Matches by format")
 		st.dataframe(
 			[{"Format": row[0], "Matches": row[1], "Completed": row[2]} for row in summary],
-			use_container_width=True,
+			width="stretch",
 			hide_index=True,
 		)
 	with second:
 		st.subheader("Most-used venues")
 		st.dataframe(
 			[{"Venue": row[0], "City": row[1], "Matches": row[2]} for row in venue_summary],
-			use_container_width=True,
+			width="stretch",
 			hide_index=True,
 		)
 
@@ -50,6 +50,6 @@ def render_sql_analytics():
 		try:
 			rows = run_analytics_query(queries[selected_query])
 			st.success(f"Query returned {len(rows)} rows.")
-			st.dataframe(rows, use_container_width=True, hide_index=True)
+			st.dataframe(rows, width="stretch", hide_index=True)
 		except Exception as error:
 			st.error(f"Query failed: {error}")

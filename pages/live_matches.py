@@ -93,11 +93,11 @@ def render_live_matches(client):
 					st.json(scorecard["miniscore"])
 				if not scorecard["batting"] and scorecard["commentary"]:
 					st.caption("Detailed scorecard is unavailable for this provider feed; showing live commentary.")
-					st.dataframe(scorecard["commentary"], use_container_width=True, hide_index=True)
+					st.dataframe(scorecard["commentary"], width="stretch", hide_index=True)
 				batting_tab, bowling_tab = st.tabs(["Batting", "Bowling"])
 				with batting_tab:
-					st.dataframe(scorecard["batting"], use_container_width=True, hide_index=True)
+					st.dataframe(scorecard["batting"], width="stretch", hide_index=True)
 				with bowling_tab:
-					st.dataframe(scorecard["bowling"], use_container_width=True, hide_index=True)
+					st.dataframe(scorecard["bowling"], width="stretch", hide_index=True)
 			except Exception as error:
 				st.error(f"Could not load scorecard: {error}")

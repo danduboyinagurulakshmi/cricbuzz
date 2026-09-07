@@ -50,7 +50,7 @@ def _player_crud():
 
 	st.dataframe(
 		[{"ID": row[0], "Player": row[1], "Role": row[2], "Country": row[3]} for row in players],
-		use_container_width=True,
+		width="stretch",
 		hide_index=True,
 	)
 
@@ -107,7 +107,7 @@ def _match_crud():
 
 	st.dataframe(
 		[{"ID": row[0], "Date": row[1], "Format": row[2], "Status": row[3], "Venue": row[4]} for row in rows],
-		use_container_width=True,
+		width="stretch",
 		hide_index=True,
 	)
 

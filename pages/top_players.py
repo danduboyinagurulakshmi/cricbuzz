@@ -14,6 +14,6 @@ def render_top_players():
 			{"Player": row[0], "Country": row[1], "Role": row[2], "Runs": row[3], "Matches": row[4]}
 			for row in rows
 		],
-		use_container_width=True,
+		width="stretch",
 		hide_index=True,
 	)
