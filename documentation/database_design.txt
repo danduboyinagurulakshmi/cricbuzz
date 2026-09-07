@@ -1,0 +1,434 @@
+CRICBUZZ LIVESTATS
+DATABASE DESIGN
+
+The database supports the dashboard's 25 SQL practice questions. Query definitions
+are stored in sql/queries/all_queries.sql and are loaded by
+services/analytics_service.py for read-only execution in Streamlit.
+
+==================================================
+1. PLAYER
+==================================================
+
+Columns:
+- player_id
+- full_name
+- role
+- batting_style
+- bowling_style
+- country
+
+
+==================================================
+2. TEAM
+==================================================
+
+Columns:
+- team_id
+- team_name
+- country
+- team_type
+
+
+==================================================
+3. VENUE
+==================================================
+
+Columns:
+- venue_id
+- venue_name
+- city
+- country
+- capacity
+
+
+==================================================
+4. SERIES
+==================================================
+
+Columns:
+- series_id
+- series_name
+- host_country
+- match_type
+- start_date
+- planned_matches
+
+
+==================================================
+5. MATCH
+==================================================
+
+Columns:
+- match_id
+- series_id
+- venue_id
+- match_date
+- match_type
+- status
+- winner_team_id
+- toss_winner_team_id
+- toss_decision
+- victory_margin
+- victory_type
+
+
+==================================================
+6. MATCH_TEAM
+==================================================
+
+Columns:
+- match_team_id
+- match_id
+- team_id
+- team_position
+
+
+==================================================
+7. PLAYER_MATCH_PERFORMANCE
+==================================================
+
+Columns:
+- performance_id
+- match_id
+- player_id
+- team_id
+- innings
+- batting_position
+- runs
+- balls
+- fours
+- sixes
+- strike_rate
+- dismissal
+
+
+==================================================
+8. BOWLING_PERFORMANCE
+==================================================
+
+Columns:
+- bowling_id
+- match_id
+- player_id
+- team_id
+- innings
+- overs
+- runs_conceded
+- wickets
+- maidens
+- economy_rate
+
+
+==================================================
+9. FIELDING_PERFORMANCE
+==================================================
+
+Columns:
+- fielding_id
+- match_id
+- player_id
+- team_id
+- innings
+- catches
+- stumpings
+
+
+==================================================
+10. PARTNERSHIP
+==================================================
+
+Columns:
+- partnership_id
+- match_id
+- innings
+- batsman1_id
+- batsman2_id
+- batsman1_position
+- batsman2_position
+- runs
+- balls
+
+
+==================================================
+RELATIONSHIPS
+==================================================
+
+1. PLAYER 1 : MANY PLAYER_MATCH_PERFORMANCE
+
+PLAYER.player_id
+    ↓
+PLAYER_MATCH_PERFORMANCE.player_id
+
+
+2. TEAM 1 : MANY MATCH_TEAM
+
+TEAM.team_id
+    ↓
+MATCH_TEAM.team_id
+
+
+3. MATCH 1 : MANY MATCH_TEAM
+
+MATCH.match_id
+    ↓
+MATCH_TEAM.match_id
+
+
+4. SERIES 1 : MANY MATCH
+
+SERIES.series_id
+    ↓
+MATCH.series_id
+
+
+5. VENUE 1 : MANY MATCH
+
+VENUE.venue_id
+    ↓
+MATCH.venue_id
+
+
+6. MATCH 1 : MANY PLAYER_MATCH_PERFORMANCE
+
+MATCH.match_id
+    ↓
+PLAYER_MATCH_PERFORMANCE.match_id
+
+
+7. MATCH 1 : MANY BOWLING_PERFORMANCE
+
+MATCH.match_id
+    ↓
+BOWLING_PERFORMANCE.match_id
+
+
+8. MATCH 1 : MANY FIELDING_PERFORMANCE
+
+MATCH.match_id
+    ↓
+FIELDING_PERFORMANCE.match_id
+
+
+9. MATCH 1 : MANY PARTNERSHIP
+
+MATCH.match_id
+    ↓
+PARTNERSHIP.match_id
+
+
+10. PLAYER 1 : MANY PARTNERSHIP
+
+PLAYER.player_id
+    ↓
+PARTNERSHIP.batsman1_id
+
+
+11. PLAYER 1 : MANY PARTNERSHIP
+
+PLAYER.player_id
+    ↓
+PARTNERSHIP.batsman2_id
+
+
+12. TEAM 1 : MANY PLAYER_MATCH_PERFORMANCE
+
+TEAM.team_id
+    ↓
+PLAYER_MATCH_PERFORMANCE.team_id
+
+
+13. TEAM 1 : MANY BOWLING_PERFORMANCE
+
+TEAM.team_id
+    ↓
+BOWLING_PERFORMANCE.team_id
+
+
+14. TEAM 1 : MANY FIELDING_PERFORMANCE
+
+TEAM.team_id
+    ↓
+FIELDING_PERFORMANCE.team_id
+
+
+15. TEAM 1 : MANY MATCH
+
+TEAM.team_id
+    ↓
+MATCH.winner_team_id
+
+
+16. TEAM 1 : MANY MATCH
+
+TEAM.team_id
+    ↓
+MATCH.toss_winner_team_id
+
+
+==================================================
+PRIMARY KEYS
+==================================================
+
+PLAYER
+- player_id
+
+TEAM
+- team_id
+
+VENUE
+- venue_id
+
+SERIES
+- series_id
+
+MATCH
+- match_id
+
+MATCH_TEAM
+- match_team_id
+
+PLAYER_MATCH_PERFORMANCE
+- performance_id
+
+BOWLING_PERFORMANCE
+- bowling_id
+
+FIELDING_PERFORMANCE
+- fielding_id
+
+PARTNERSHIP
+- partnership_id
+
+
+==================================================
+FOREIGN KEYS
+==================================================
+
+MATCH
+- series_id → SERIES.series_id
+- venue_id → VENUE.venue_id
+- winner_team_id → TEAM.team_id
+- toss_winner_team_id → TEAM.team_id
+
+MATCH_TEAM
+- match_id → MATCH.match_id
+- team_id → TEAM.team_id
+
+PLAYER_MATCH_PERFORMANCE
+- match_id → MATCH.match_id
+- player_id → PLAYER.player_id
+- team_id → TEAM.team_id
+
+BOWLING_PERFORMANCE
+- match_id → MATCH.match_id
+- player_id → PLAYER.player_id
+- team_id → TEAM.team_id
+
+FIELDING_PERFORMANCE
+- match_id → MATCH.match_id
+- player_id → PLAYER.player_id
+- team_id → TEAM.team_id
+
+PARTNERSHIP
+- match_id → MATCH.match_id
+- batsman1_id → PLAYER.player_id
+- batsman2_id → PLAYER.player_id
+
+
+==================================================
+IMPORTANT CONSTRAINTS
+==================================================
+
+1. Each player must have a unique player_id.
+
+2. Each team must have a unique team_id.
+
+3. Each venue must have a unique venue_id.
+
+4. Each series must have a unique series_id.
+
+5. Each match must have a unique match_id.
+
+6. A team should not appear more than once in the same match.
+
+7. A match should normally contain two participating teams.
+
+8. team_position identifies the team's position in the match.
+
+9. batting_position identifies a player's position in the batting order.
+
+10. batsman1_position and batsman2_position are used to
+    identify consecutive batting positions.
+
+11. batsman1_id and batsman2_id must refer to valid players.
+
+12. victory_type should represent the type of victory,
+    such as runs or wickets.
+
+13. victory_margin stores the numerical winning margin.
+
+14. Toss decision should represent the decision made by
+    the toss-winning team, such as bat or bowl.
+
+
+==================================================
+NORMALIZATION
+==================================================
+
+First Normal Form (1NF)
+- All columns contain atomic values.
+- No lists are stored inside individual cells.
+- Repeating groups are avoided.
+
+Second Normal Form (2NF)
+- Tables are in 1NF.
+- Non-key attributes depend on the complete primary key.
+- Surrogate primary keys are used for major entities.
+
+Third Normal Form (3NF)
+- Tables are in 2NF.
+- Non-key attributes do not depend on other non-key attributes.
+- Player, team, venue, series, match, and performance
+  information is separated into appropriate tables.
+
+
+==================================================
+DESIGN SUPPORT FOR SQL ANALYTICS
+==================================================
+
+The database design supports:
+
+- Player filtering by country and role
+- Match and venue analysis
+- Team win analysis
+- Format-based batting analysis
+- Series analysis by year
+- Batting and bowling statistics
+- Home vs away analysis
+- Toss analysis
+- Close-match analysis
+- Venue-specific bowling analysis
+- Multi-format player analysis
+- Recent player performance
+- Batting consistency analysis
+- Weighted player ranking
+- Team head-to-head analysis
+- Consecutive batting partnerships
+- Quarterly player performance trends
+
+
+==================================================
+DATABASE DESIGN STATUS
+==================================================
+
+Entities              : COMPLETE
+Relationships         : COMPLETE
+Primary Keys          : IDENTIFIED
+Foreign Keys          : IDENTIFIED
+1NF                    : COMPLETE
+2NF                    : COMPLETE
+3NF                    : COMPLETE
+SQL Requirements Check: COMPLETE
+
+Next Phase:
+DATABASE SCHEMA IMPLEMENTATION
