@@ -11,7 +11,7 @@ def render_live_matches(client):
 	st.markdown('<p class="page-lead">Every fixture in one place, with the latest score, state, and ground conditions.</p>', unsafe_allow_html=True)
 
 	if not client.api_key or not client.api_host:
-		st.warning("Configure CRICKET_API_KEY and CRICKET_API_HOST in .env to load live scores.")
+		st.warning("Configure CRICKET_API_KEY and CRICKET_API_HOST in your environment or Streamlit Secrets to load live scores.")
 		return
 
 	feed_columns = st.columns([1, 1, 2])
